@@ -1,0 +1,72 @@
+import { Navigate, Route, Routes } from 'react-router-dom'
+import Navbar from './components/Navbar'
+import ProtectedRoute from './components/ProtectedRoute'
+import AddProductPage from './pages/AddProductPage'
+import DashboardPage from './pages/DashboardPage'
+import LoginPage from './pages/LoginPage'
+import OrdersPage from './pages/OrdersPage'
+import ProductDetailsPage from './pages/ProductDetailsPage'
+import ProductsPage from './pages/ProductsPage'
+import RegisterPage from './pages/RegisterPage'
+import { useAuth } from './context/AuthContext'
+import './App.css'
+
+function AppLayout() {
+  const { isAuthenticated } = useAuth()
+
+  return (
+    <main className="app-shell">
+      {isAuthenticated ? <Navbar /> : null}
+      <div className="container">
+        <Routes>
+          <Route path="/" element={<Navigate replace to="/dashboard" />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/products"
+            element={
+              <ProtectedRoute>
+                <ProductsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/products/:productId"
+            element={
+              <ProtectedRoute>
+                <ProductDetailsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoute>
+                <OrdersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-product"
+            element={
+              <ProtectedRoute allowedRoles={['supplier']}>
+                <AddProductPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Navigate replace to="/dashboard" />} />
+        </Routes>
+      </div>
+    </main>
+  )
+}
+
+export default AppLayout
