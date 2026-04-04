@@ -24,10 +24,10 @@ from logistics.views import LogisticsViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 router = DefaultRouter()
-router.register(r'users', UserViewSet)
-router.register(r'products', ProductViewSet)
-router.register(r'orders', OrderViewSet)
-router.register(r'logistics', LogisticsViewSet)
+router.register(r'users', UserViewSet, basename='users')
+router.register(r'products', ProductViewSet, basename='products')
+router.register(r'orders', OrderViewSet, basename='orders')
+router.register(r'logistics', LogisticsViewSet, basename='logistics')
 
 
 urlpatterns = [

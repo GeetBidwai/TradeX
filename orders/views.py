@@ -16,35 +16,42 @@ class OrderViewSet(viewsets.ModelViewSet):
         if user.role == 'buyer':
             return Order.objects.filter(user=user)
 
-        # Supplier can see all orders (for now)
+        # Supplier sees only orders for their products
+        if user.role == 'supplier':
+            return Order.objects.filter(product__supplier=user)
+
         return Order.objects.all()
 
     def perform_create(self, serializer):
         user = self.request.user
 
-        # 🚫 Only buyers can place orders
+        # Only buyers can place orders
         if user.role != 'buyer':
             raise PermissionDenied("Only buyers can place orders")
 
         product = serializer.validated_data['product']
         quantity = serializer.validated_data['quantity']
 
-        # 🚨 Stock validation
+        # Buyers cannot order their own product
+        if product.supplier == user:
+            raise ValidationError("You cannot order your own product")
+
+        # Stock validation
         if product.quantity < quantity:
             raise ValidationError("Not enough stock available!")
 
-        # ✅ Reduce stock
+        # Reduce stock
         product.quantity -= quantity
         product.save()
 
-        # ✅ Save order
+        # Save order
         order = serializer.save(user=user)
 
-        # 🚀 AUTO CREATE LOGISTICS
+        # Auto create logistics
         from logistics.models import Logistics
 
         Logistics.objects.create(
             order=order,
-            status="Pending",
-            current_location="Warehouse"
+            status=Logistics.STATUS_PENDING,
+            location="Warehouse"
         )
