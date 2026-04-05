@@ -90,8 +90,20 @@ export function createOrder(data) {
   return api.post('orders/', data)
 }
 
+export function runSupplierAction(orderId, data) {
+  return api.post(`orders/${orderId}/supplier_action/`, data)
+}
+
+export function getOrderAnalytics() {
+  return api.get('orders/analytics/')
+}
+
 export function getLogistics() {
   return api.get('logistics/')
+}
+
+export function updateLogistics(logisticsId, data) {
+  return api.patch(`logistics/${logisticsId}/`, data)
 }
 
 export default api

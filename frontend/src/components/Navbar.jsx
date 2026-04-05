@@ -13,9 +13,9 @@ function Navbar() {
   return (
     <header className="navbar">
       <div>
-        <p className="navbar-label">TradeX</p>
+        <p className="navbar-label">TradeX Asia</p>
         <h1 className="navbar-title">
-          {role === 'supplier' ? 'Supplier Portal' : 'Buyer Portal'}
+          {role === 'supplier' ? 'Supplier Dashboard' : 'Buyer Dashboard'}
         </h1>
         <p className="navbar-subtitle">
           {user?.name || user?.email || 'Authenticated user'}
@@ -37,7 +37,7 @@ function Navbar() {
           }
           to="/products"
         >
-          Products
+          Marketplace
         </NavLink>
         <NavLink
           className={({ isActive }) =>
@@ -45,7 +45,7 @@ function Navbar() {
           }
           to="/orders"
         >
-          Orders
+          Requests
         </NavLink>
         {role === 'supplier' ? (
           <NavLink

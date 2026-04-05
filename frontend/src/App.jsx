@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import AddProductPage from './pages/AddProductPage'
 import DashboardPage from './pages/DashboardPage'
 import LoginPage from './pages/LoginPage'
+import MarketplacePage from './pages/MarketplacePage'
 import OrdersPage from './pages/OrdersPage'
 import ProductDetailsPage from './pages/ProductDetailsPage'
 import ProductsPage from './pages/ProductsPage'
@@ -19,7 +20,7 @@ function AppLayout() {
       {isAuthenticated ? <Navbar /> : null}
       <div className="container">
         <Routes>
-          <Route path="/" element={<Navigate replace to="/dashboard" />} />
+          <Route path="/" element={<MarketplacePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route
@@ -62,7 +63,10 @@ function AppLayout() {
               </ProtectedRoute>
             }
           />
-          <Route path="*" element={<Navigate replace to="/dashboard" />} />
+          <Route
+            path="*"
+            element={<Navigate replace to={isAuthenticated ? '/dashboard' : '/'} />}
+          />
         </Routes>
       </div>
     </main>

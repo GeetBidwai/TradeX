@@ -77,6 +77,15 @@
   color: #64748b;
 }
 
+.eyebrow {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #2563eb;
+}
+
 .helper-text a,
 .inline-link {
   color: #2563eb;
@@ -189,7 +198,8 @@
 .list,
 .card-grid,
 .action-grid,
-.details-grid {
+.details-grid,
+.tracking-grid {
   display: grid;
   gap: 16px;
 }
@@ -199,7 +209,8 @@
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
-.details-grid {
+.details-grid,
+.tracking-grid {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
@@ -242,6 +253,26 @@
   border-radius: 12px;
   background: #f8fafc;
   color: #64748b;
+}
+
+.hero-panel {
+  display: grid;
+  gap: 20px;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.section-gap {
+  margin-top: 24px;
+}
+
+.section-title {
+  margin: 0 0 16px;
+  color: #0f172a;
 }
 
 @keyframes spin {

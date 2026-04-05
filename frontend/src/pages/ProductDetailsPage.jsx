@@ -10,8 +10,9 @@ function ProductDetailsPage() {
   const { role } = useAuth()
   const [products, setProducts] = useState([])
   const [quantity, setQuantity] = useState(1)
+  const [shippingMode, setShippingMode] = useState('air')
   const [loading, setLoading] = useState(true)
-  const [submitting, setSubmitting] = useState(false)
+  const [submitting, setSubmitting] = useState('')
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -39,15 +40,17 @@ function ProductDetailsPage() {
     [productId, products],
   )
 
-  const handleOrder = async (event) => {
+  const handleSubmit = async (event, requestType) => {
     event.preventDefault()
-    setSubmitting(true)
+    setSubmitting(requestType)
     setError('')
 
     try {
       await createOrder({
         product_id: Number(productId),
         quantity: Number(quantity),
+        order_type: requestType,
+        shipping_mode: requestType === 'order' ? shippingMode : '',
       })
       navigate('/orders')
     } catch (err) {
@@ -55,12 +58,11 @@ function ProductDetailsPage() {
       const detail =
         data?.detail ||
         data?.non_field_errors?.[0] ||
-        (Array.isArray(data) ? data[0] : null) ||
         (typeof data === 'string' ? data : null)
 
-      setError(detail || 'Could not place the order.')
+      setError(detail || 'Could not submit the request.')
     } finally {
-      setSubmitting(false)
+      setSubmitting('')
     }
   }
 
@@ -81,14 +83,14 @@ function ProductDetailsPage() {
             <h3>{product.name}</h3>
             <p>Price: {product.price}</p>
             <p>Available Quantity: {product.quantity}</p>
-            <p>Supplier: {product.supplier?.name || 'N/A'}</p>
+            <p>Supplier: {product.supplier?.name || product.supplier?.email || 'N/A'}</p>
           </div>
 
           {role === 'buyer' ? (
-            <form className="details-panel form-grid" onSubmit={handleOrder}>
+            <form className="details-panel form-grid">
               <div>
                 <label className="field-label" htmlFor="quantity">
-                  Order Quantity
+                  Request Quantity
                 </label>
                 <input
                   className="input"
@@ -102,14 +104,45 @@ function ProductDetailsPage() {
                 />
               </div>
 
-              <button className="button" disabled={submitting} type="submit">
-                {submitting ? 'Placing Order...' : 'Place Order'}
-              </button>
+              <div>
+                <label className="field-label" htmlFor="shippingMode">
+                  Shipping Mode for Orders
+                </label>
+                <select
+                  className="input"
+                  id="shippingMode"
+                  onChange={(event) => setShippingMode(event.target.value)}
+                  value={shippingMode}
+                >
+                  <option value="air">Air</option>
+                  <option value="sea">Sea</option>
+                </select>
+              </div>
+
+              <div className="button-row">
+                <button
+                  className="button secondary"
+                  disabled={Boolean(submitting)}
+                  onClick={(event) => handleSubmit(event, 'enquiry')}
+                  type="button"
+                >
+                  {submitting === 'enquiry' ? 'Sending Enquiry...' : 'Enquire'}
+                </button>
+                <button
+                  className="button"
+                  disabled={Boolean(submitting)}
+                  onClick={(event) => handleSubmit(event, 'order')}
+                  type="button"
+                >
+                  {submitting === 'order' ? 'Placing Order...' : 'Place Order'}
+                </button>
+              </div>
             </form>
           ) : (
             <div className="info-box">
-              Suppliers can view product details here, but only buyers can place
-              orders.
+              Buyers can create enquiries or orders here. Suppliers can review
+              the listing details and then manage incoming requests from the
+              dashboard.
             </div>
           )}
         </div>

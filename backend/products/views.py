@@ -1,7 +1,9 @@
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import IsAuthenticated
 from .models import Product
 from .serializers import ProductSerializer
+from users.services import get_marketplace_profile
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -9,19 +11,18 @@ class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
+        auth_user = self.request.user
+        profile = get_marketplace_profile(auth_user)
 
-        # Supplier sees only their products
-        if user.role == 'supplier':
-            return Product.objects.filter(supplier=user)
+        if profile and profile.role == 'supplier':
+            return Product.objects.filter(supplier=auth_user).select_related('supplier')
 
-        # Buyer sees all products
-        return Product.objects.all()
+        return Product.objects.all().select_related('supplier')
 
     def perform_create(self, serializer):
-        # Only supplier can create product
-        if self.request.user.role != 'supplier':
-            from rest_framework.exceptions import PermissionDenied
+        profile = get_marketplace_profile(self.request.user)
+
+        if not profile or profile.role != 'supplier':
             raise PermissionDenied("Only suppliers can create products")
 
         serializer.save(supplier=self.request.user)
