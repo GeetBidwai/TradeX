@@ -21,7 +21,7 @@ from users.views import UserViewSet
 from users.views import TradeXTokenObtainPairView
 from products.views import ProductViewSet
 from orders.views import ConversationViewSet, MessageViewSet, OrderViewSet
-from logistics.views import LogisticsViewSet
+from logistics.views import LogisticsInquiryViewSet, LogisticsViewSet
 from rest_framework_simplejwt.views import TokenRefreshView
 
 router = DefaultRouter()
@@ -31,6 +31,7 @@ router.register(r'conversations', ConversationViewSet, basename='conversations')
 router.register(r'messages', MessageViewSet, basename='messages')
 router.register(r'orders', OrderViewSet, basename='orders')
 router.register(r'logistics', LogisticsViewSet, basename='logistics')
+router.register(r'logistics-inquiry', LogisticsInquiryViewSet, basename='logistics-inquiry')
 
 
 urlpatterns = [

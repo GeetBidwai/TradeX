@@ -1,5 +1,6 @@
 from django.db import models
 from orders.models import Order
+from users.models import User
 
 
 class Logistics(models.Model):
@@ -56,3 +57,36 @@ class Logistics(models.Model):
 
     def __str__(self):
         return f"{self.order.id} - {self.status}"
+
+
+class LogisticsInquiry(models.Model):
+    SERVICE_SEA = "sea"
+    SERVICE_AIR = "air"
+    SERVICE_WAREHOUSE = "warehouse"
+    SERVICE_CHOICES = [
+        (SERVICE_SEA, "Sea Freight"),
+        (SERVICE_AIR, "Air Freight"),
+        (SERVICE_WAREHOUSE, "Warehousing"),
+    ]
+
+    buyer = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="logistics_inquiries",
+    )
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    service_type = models.CharField(max_length=20, choices=SERVICE_CHOICES)
+    cargo_type = models.CharField(max_length=100)
+    origin = models.CharField(max_length=100)
+    destination = models.CharField(max_length=100)
+    quantity = models.CharField(max_length=100)
+    weight = models.CharField(max_length=100)
+    notes = models.TextField(blank=True)
+    telegram_username = models.CharField(max_length=100, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Inquiry #{self.id} - {self.name}"

@@ -106,4 +106,12 @@ export function updateLogistics(logisticsId, data) {
   return api.patch(`logistics/${logisticsId}/`, data)
 }
 
+export function getLogisticsInquiries() {
+  return api.get('logistics-inquiry/')
+}
+
+export function createLogisticsInquiry(data) {
+  return api.post('logistics-inquiry/', data)
+}
+
 export default api

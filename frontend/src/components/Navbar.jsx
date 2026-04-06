@@ -43,6 +43,14 @@ function Navbar() {
           className={({ isActive }) =>
             `button ${isActive ? 'active' : 'secondary'}`
           }
+          to="/logistics"
+        >
+          Logistics
+        </NavLink>
+        <NavLink
+          className={({ isActive }) =>
+            `button ${isActive ? 'active' : 'secondary'}`
+          }
           to="/orders"
         >
           Requests

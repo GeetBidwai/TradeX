@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 from products.models import Product
 from users.models import User
 from orders.models import Order
-from .models import Logistics
+from .models import Logistics, LogisticsInquiry
 
 
 AuthUser = get_user_model()
@@ -75,3 +75,27 @@ class LogisticsFlowTests(APITestCase):
         self.assertEqual(self.logistics.tracking_stage, Logistics.STAGE_TRANSPORT)
         self.assertEqual(self.logistics.status, Logistics.STATUS_IN_TRANSIT)
         self.assertEqual(self.logistics.location, "Outbound Hub")
+
+    def test_buyer_can_create_logistics_inquiry(self):
+        self.client.force_authenticate(user=self.buyer_auth)
+
+        response = self.client.post(
+            reverse("logistics-inquiry-list"),
+            {
+                "name": "Buyer Two",
+                "email": "buyer2@example.com",
+                "service_type": "sea",
+                "cargo_type": "Steel Coils",
+                "origin": "Mumbai",
+                "destination": "Dubai",
+                "quantity": "10 tons",
+                "notes": "",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        inquiry = LogisticsInquiry.objects.get()
+        self.assertEqual(inquiry.buyer, self.buyer_profile)
+        self.assertEqual(inquiry.email, "buyer2@example.com")
+        self.assertEqual(inquiry.notes, "")

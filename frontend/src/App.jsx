@@ -5,6 +5,7 @@ import AddProductPage from './pages/AddProductPage'
 import ChatPage from './pages/ChatPage'
 import DashboardPage from './pages/DashboardPage'
 import LoginPage from './pages/LoginPage'
+import LogisticsPage from './pages/LogisticsPage'
 import MarketplacePage from './pages/MarketplacePage'
 import OrdersPage from './pages/OrdersPage'
 import ProductDetailsPage from './pages/ProductDetailsPage'
@@ -57,6 +58,14 @@ function AppLayout() {
             element={
               <ProtectedRoute>
                 <ProductsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/logistics"
+            element={
+              <ProtectedRoute>
+                <LogisticsPage />
               </ProtectedRoute>
             }
           />
